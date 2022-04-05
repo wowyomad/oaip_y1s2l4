@@ -9,6 +9,12 @@ struct List
     List *next;
 };
 
+//функции Push, Pop, Print, Clear - универсальные и подходят
+//как для указателя на начало списка, так и на конец. Сделано
+//это путём проверки указателя на предыдущий(prev) элемент.
+// prev == NULL - значит предыдущего элемента нет и
+//*list - указатель на начало, иначе *list - указаатель на конец.
+
 void CreateList(List **beg, List **end, const int data = 0);
 void Push(List **list, const int data = 0);
 void Pop(List **list, int *data = NULL);
@@ -21,12 +27,12 @@ int main(int argc, char **arv)
 {
     List *beg;
     List *end;
-    CreateList(&beg, &end, 5);
-    Push(&beg, 10);
-    Push(&end, 15);
+    CreateList(&beg, &end, 4);
+    Push(&beg, 3);
+    Push(&beg, 1);
     Print(beg);
     Print(end);
-    Pop(&end);
+    Zadanie(&beg);
     Print(beg);
     Print(end);
     Clear(&beg);
@@ -34,23 +40,23 @@ int main(int argc, char **arv)
     getchar();
 }
 
-void Print(List* list)
+void Print(List *list)
 {
     List *temp = list;
-    if(list->prev == NULL)
+    if (list->prev == NULL)
     {
-        while(temp != NULL)
+        while (temp != NULL)
         {
-             printf("%d%c", temp->data, ' ');
-             temp = temp->next;
+            printf("%d%c", temp->data, ' ');
+            temp = temp->next;
         }
     }
     else
     {
-        while(temp != NULL)
+        while (temp != NULL)
         {
-             printf("%d%c", temp->data, ' ');
-             temp = temp->prev;
+            printf("%d%c", temp->data, ' ');
+            temp = temp->prev;
         }
     }
     printf("%c", '\n');
@@ -117,6 +123,7 @@ void Pop(List **list, int *data)
 void Clear(List **list)
 {
     List *temp;
+
     if ((*list)->prev == NULL)
         while (*list != NULL)
         {
@@ -145,22 +152,44 @@ void Zadanie(List **list)
         count++;
         temp = temp->next;
     }
+
     avg /= count;
     List *temp1 = NULL;
     Push(list);
     temp = *list;
-    while (temp->next != NULL)
-    {
-        if (temp->next->data < avg)
+
+    //если *list - это начало
+    if ((*list)->prev == NULL)
+        while (temp->next != NULL)
         {
-            temp1 = temp->next;
-            temp->next->next->prev = temp;
-            temp->next = temp->next->next;
-            delete temp1;
+            if (temp->next->data < avg)
+            {
+                temp1 = temp->next;
+                temp->next->next->prev = temp;
+                temp->next = temp->next->next;
+                delete temp1;
+            }
+            else
+            {
+                temp = temp->next;
+            }
         }
-        else
+    else
+    {
+        while (temp->prev != NULL)
         {
-            temp = temp->next;
+            if (temp->prev->data < avg)
+            {
+                temp1 - temp->prev;
+                temp->prev->prev->next = temp;
+                temp->prev = temp->prev->prev;
+                delete temp1;
+            }
+            else
+            {
+                temp = temp->prev;
+            }
         }
     }
+    Pop(list);
 }
