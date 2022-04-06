@@ -21,7 +21,7 @@ void Pop(List **list, int *data = NULL);
 void Print(List *list);
 void Clear(List **list);
 
-void Zadanie(List **list);
+void Zadanie(List **beg, List **end);
 
 int main(int argc, char **arv)
 {
@@ -29,14 +29,24 @@ int main(int argc, char **arv)
     List *end;
     CreateList(&beg, &end, 4);
     Push(&beg, 3);
+    Push(&end, 5);
     Push(&beg, 1);
+    Push(&end, 2);
+    Push(&beg, 10);
+    Push(&end, -5);
+
     Print(beg);
     Print(end);
-    Zadanie(&beg);
+
+    Zadanie(&beg, &end);
     Print(beg);
     Print(end);
+    Zadanie(&beg, &end);
+    Print(beg);
+    Print(end);
+
     Clear(&beg);
-    std::cout << "End\n";
+    std::cout << "The end\n";
     getchar();
 }
 
@@ -140,30 +150,31 @@ void Clear(List **list)
         }
 }
 
-void Zadanie(List **list)
+void Zadanie(List **beg, List **end)
 {
-    List *temp = *list;
+    List *temp = *beg;
     float avg = 0;
     int count = 0;
 
     while (temp != NULL)
     {
-        avg += temp->data;
         count++;
+        avg += temp->data;
         temp = temp->next;
     }
 
     avg /= count;
+    count = 0;
     List *temp1 = NULL;
-    Push(list);
-    temp = *list;
+    Push(beg);
+    Push(end);
+    temp = *beg;
 
-    //если *list - это начало
-    if ((*list)->prev == NULL)
-        while (temp->next != NULL)
+        while (temp->next->next != NULL)
         {
             if (temp->next->data < avg)
             {
+                count++;
                 temp1 = temp->next;
                 temp->next->next->prev = temp;
                 temp->next = temp->next->next;
@@ -174,22 +185,8 @@ void Zadanie(List **list)
                 temp = temp->next;
             }
         }
-    else
-    {
-        while (temp->prev != NULL)
-        {
-            if (temp->prev->data < avg)
-            {
-                temp1 - temp->prev;
-                temp->prev->prev->next = temp;
-                temp->prev = temp->prev->prev;
-                delete temp1;
-            }
-            else
-            {
-                temp = temp->prev;
-            }
-        }
-    }
-    Pop(list);
+    Pop(end);
+    Pop(beg);
+    std::cout << "Среднее значение:\t" << avg << '\n';
+    std::cout << "Удалено элементов:\t" << count << '\n';
 }
